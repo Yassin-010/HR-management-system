@@ -54,7 +54,6 @@ Employee.prototype.render = function () {
 
 
 
-
     employeeCard.appendChild(employeeImage);
     employeeCard.appendChild(employeeName);
     employeeCard.appendChild(employeeID);
