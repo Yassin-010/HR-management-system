@@ -1,3 +1,5 @@
+
+
 function Employee(employeeID, fullName, department, level, imageURL) {
     this.employeeID = employeeID;
     this.fullName = fullName;
