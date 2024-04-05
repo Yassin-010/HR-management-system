@@ -24,11 +24,35 @@ Employee.prototype.calculateSalary = function () {
     this.netSalary = this.salary - (this.salary * 7.5) / 100;
 };
 
+
+// Render method for Employee prototype
 Employee.prototype.render = function () {
     const mainSection = document.querySelector("main");
 
+    const departmentSection = document.getElementById(this.department.toLowerCase());
+
+    if (!departmentSection) {
+        const newDepartmentSection = document.createElement("section");
+        newDepartmentSection.id = this.department.toLowerCase();
+
+        const departmentHeading = document.createElement("h2");
+        departmentHeading.textContent = this.department;
+
+        newDepartmentSection.appendChild(departmentHeading);
+        mainSection.appendChild(newDepartmentSection);
+    }
+
+    const departmentContainer = document.getElementById(this.department.toLowerCase());
+
     const employeeCard = document.createElement("div");
     employeeCard.classList.add("employee-card");
+
+    const employeeImage = document.createElement("img");
+    console.log(this.fullName);
+    employeeImage.src = `assets/${this.fullName}.jpg`;
+    employeeImage.alt = 'not found';
+    employeeImage.height = "100";
+    employeeImage.width = "100";
 
     const employeeName = document.createElement("h3");
     employeeName.textContent = this.fullName;
@@ -48,15 +72,6 @@ Employee.prototype.render = function () {
     const employeeNetSalary = document.createElement("p");
     employeeNetSalary.textContent = `Net Salary: $${this.netSalary.toFixed(2)}`;
 
-    const employeeImage = document.createElement("img");
-    employeeImage.src = this.imageURL;
-    employeeImage.alt = this.fullName;
-    employeeImage.height = "100"
-    employeeImage.width = "100"
-
-
-
-
     employeeCard.appendChild(employeeImage);
     employeeCard.appendChild(employeeName);
     employeeCard.appendChild(employeeID);
@@ -65,20 +80,35 @@ Employee.prototype.render = function () {
     employeeCard.appendChild(employeeSalary);
     employeeCard.appendChild(employeeNetSalary);
 
-    mainSection.appendChild(employeeCard);
+    departmentContainer.appendChild(employeeCard);
 };
+const employees = [];
 
-const employees = [
-    new Employee(1000, "Ghazi Samer", "Administration", "Senior", "https://static.vecteezy.com/system/resources/previews/004/274/186/original/person-icon-user-interface-icon-silhouette-of-man-simple-symbol-a-glyph-symbol-in-your-web-site-design-logo-app-ui-webinar-video-chat-ect-vector.jpg"),
-    new Employee(1001, "Lana Ali", "Finance", "Senior", "https://static.vecteezy.com/system/resources/previews/004/274/186/original/person-icon-user-interface-icon-silhouette-of-man-simple-symbol-a-glyph-symbol-in-your-web-site-design-logo-app-ui-webinar-video-chat-ect-vector.jpg"),
-    new Employee(1002, "Tamara Ayoub", "Marketing", "Senior", "https://static.vecteezy.com/system/resources/previews/004/274/186/original/person-icon-user-interface-icon-silhouette-of-man-simple-symbol-a-glyph-symbol-in-your-web-site-design-logo-app-ui-webinar-video-chat-ect-vector.jpg"),
-    new Employee(1003, "Safi Walid", "Administration", "Mid-Senior", "https://static.vecteezy.com/system/resources/previews/004/274/186/original/person-icon-user-interface-icon-silhouette-of-man-simple-symbol-a-glyph-symbol-in-your-web-site-design-logo-app-ui-webinar-video-chat-ect-vector.jpg"),
-    new Employee(1004, "Omar Zaid", "Development", "Senior", "https://static.vecteezy.com/system/resources/previews/004/274/186/original/person-icon-user-interface-icon-silhouette-of-man-simple-symbol-a-glyph-symbol-in-your-web-site-design-logo-app-ui-webinar-video-chat-ect-vector.jpg"),
-    new Employee(1005, "Rana Saleh", "Development", "Junior", "https://static.vecteezy.com/system/resources/previews/004/274/186/original/person-icon-user-interface-icon-silhouette-of-man-simple-symbol-a-glyph-symbol-in-your-web-site-design-logo-app-ui-webinar-video-chat-ect-vector.jpg"),
-    new Employee(1006, "Hadi Ahmad", "Finance", "Mid-Senior", "https://static.vecteezy.com/system/resources/previews/004/274/186/original/person-icon-user-interface-icon-silhouette-of-man-simple-symbol-a-glyph-symbol-in-your-web-site-design-logo-app-ui-webinar-video-chat-ect-vector.jpg"),
-];
 
-employees.forEach((employee) => {
+document.getElementById('employee-form').addEventListener('submit', function (event) {
+    event.preventDefault(); // Prevent form submission
+
+    const fullName = document.getElementById('full-name').value;
+    const department = document.getElementById('department').value;
+    const level = document.getElementById('level').value;
+    const imageURL = document.getElementById('image-url').value;
+
+    const employee = new Employee(generateEmployeeID(), fullName, department, level, imageURL);
     employee.calculateSalary();
     employee.render();
+
+    // Clear form fields after submission
+    document.getElementById('employee-form').reset();
 });
+
+
+function generateEmployeeID() {
+    const existingIDs = employees.map((employee) => employee.employeeID);
+    let newID;
+
+    do {
+        newID = Math.floor(1000 + Math.random() * 9000);
+    } while (existingIDs.includes(newID));
+
+    return newID;
+}
