@@ -42,8 +42,8 @@ Employee.prototype.render = function () {
         mainSection.appendChild(newDepartmentSection);
     }
 
-    const departmentContainer = document.getElementById(this.department.toLowerCase());
-
+    const departmentContainer = document.getElementById(this.department.toLowerCase())
+    
     const employeeCard = document.createElement("div");
     employeeCard.classList.add("employee-card");
 
