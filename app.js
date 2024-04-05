@@ -73,7 +73,7 @@ Employee.prototype.render = function () {
     employeeNetSalary.textContent = `Net Salary: $${this.netSalary.toFixed(2)}`;
 
     
-
+ 
 
     employeeCard.appendChild(employeeImage);
     employeeCard.appendChild(employeeName);
