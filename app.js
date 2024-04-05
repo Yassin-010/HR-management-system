@@ -1,5 +1,4 @@
-
-
+// Employee constructor function
 function Employee(employeeID, fullName, department, level, imageURL) {
     this.employeeID = employeeID;
     this.fullName = fullName;
@@ -10,22 +9,21 @@ function Employee(employeeID, fullName, department, level, imageURL) {
     this.netSalary = 0;
 }
 
+// Calculate salary for Employee
 Employee.prototype.calculateSalary = function () {
     const salaryTable = {
-        "Senior": { min: 1500, max: 2000 },
+        Senior: { min: 1500, max: 2000 },
         "Mid-Senior": { min: 1000, max: 1500 },
-        "Junior": { min: 500, max: 1000 },
+        Junior: { min: 500, max: 1000 },
     };
 
     const { min, max } = salaryTable[this.level];
     this.salary = Math.floor(Math.random() * (max - min + 1)) + min;
 
-
     this.netSalary = this.salary - (this.salary * 7.5) / 100;
 };
 
-
-// Render method for Employee prototype
+// Render Employee information
 Employee.prototype.render = function () {
     const mainSection = document.querySelector("main");
 
@@ -42,15 +40,14 @@ Employee.prototype.render = function () {
         mainSection.appendChild(newDepartmentSection);
     }
 
-    const departmentContainer = document.getElementById(this.department.toLowerCase())
-    
+    const departmentContainer = document.getElementById(this.department.toLowerCase());
+
     const employeeCard = document.createElement("div");
     employeeCard.classList.add("employee-card");
 
     const employeeImage = document.createElement("img");
-    console.log(this.fullName);
     employeeImage.src = `assets/${this.fullName}.jpg`;
-    employeeImage.alt = 'not found';
+    employeeImage.alt = "not found";
     employeeImage.height = "100";
     employeeImage.width = "100";
 
@@ -72,9 +69,6 @@ Employee.prototype.render = function () {
     const employeeNetSalary = document.createElement("p");
     employeeNetSalary.textContent = `Net Salary: $${this.netSalary.toFixed(2)}`;
 
-    
- 
-
     employeeCard.appendChild(employeeImage);
     employeeCard.appendChild(employeeName);
     employeeCard.appendChild(employeeID);
@@ -85,26 +79,37 @@ Employee.prototype.render = function () {
 
     departmentContainer.appendChild(employeeCard);
 };
-const employees = [];
 
+// Array to store employees
+let employees = [];
 
-document.getElementById('employee-form').addEventListener('submit', function (event) {
-    event.preventDefault(); // Prevent form submission
+// Save employees to Local Storage
+function saveEmployeesToLocalStorage() {
+    localStorage.setItem("employees", JSON.stringify(employees));
+}
 
-    const fullName = document.getElementById('full-name').value;
-    const department = document.getElementById('department').value;
-    const level = document.getElementById('level').value;
-    const imageURL = document.getElementById('image-url').value;
+// Retrieve employees from Local Storage
+function retrieveEmployeesFromLocalStorage() {
+    const storedEmployees = localStorage.getItem("employees");
 
-    const employee = new Employee(generateEmployeeID(), fullName, department, level, imageURL);
-    employee.calculateSalary();
-    employee.render();
+    if (storedEmployees) {
+        employees = JSON.parse(storedEmployees);
+        employees.forEach((employee) => {
+            const newEmployee = new Employee(
+                employee.employeeID,
+                employee.fullName,
+                employee.department,
+                employee.level,
+                employee.imageURL
+            );
+            newEmployee.salary = employee.salary;
+            newEmployee.netSalary = employee.netSalary;
+            newEmployee.render();
+        });
+    }
+}
 
-    // Clear form fields after submission
-    document.getElementById('employee-form').reset();
-});
-
-
+// Generate a unique employee ID
 function generateEmployeeID() {
     const existingIDs = employees.map((employee) => employee.employeeID);
     let newID;
@@ -115,3 +120,29 @@ function generateEmployeeID() {
 
     return newID;
 }
+
+// Add event listener to the employee form
+document.addEventListener("DOMContentLoaded", function () {
+    document.getElementById("employee-form").addEventListener("submit", function (event) {
+        event.preventDefault(); // Prevent form submission
+
+        const fullName = document.getElementById("full-name").value;
+        const department = document.getElementById("department").value;
+        const level = document.getElementById("level").value;
+        const imageURL = document.getElementById("image-url").value;
+
+        const employee = new Employee(generateEmployeeID(), fullName, department, level, imageURL);
+        employee.calculateSalary();
+        employee.render();
+
+        employees.push(employee);
+        // Save employees to Local Storage
+        saveEmployeesToLocalStorage();
+
+        // Clear form fields after submission
+        document.getElementById("employee-form").reset();
+    });
+
+    // Retrieve employees from Local Storage
+    retrieveEmployeesFromLocalStorage();
+});
