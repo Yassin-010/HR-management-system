@@ -42,15 +42,18 @@ Employee.prototype.render = function () {
         mainSection.appendChild(newDepartmentSection);
     }
 
-    const departmentContainer = document.getElementById(this.department.toLowerCase())
-    
+    const departmentContainer = document.getElementById(this.department.toLowerCase());
+
     const employeeCard = document.createElement("div");
     employeeCard.classList.add("employee-card");
 
     const employeeImage = document.createElement("img");
-    console.log(this.fullName);
-    employeeImage.src = `assets/${this.fullName}.jpg`;
-    employeeImage.alt = 'not found';
+    if (this.fullNameExistsInAssets()) {
+        employeeImage.src = `assets/${this.fullName}.jpg`;
+    } else {
+        employeeImage.src = this.imageURL;
+    }
+    employeeImage.alt = "not found";
     employeeImage.height = "100";
     employeeImage.width = "100";
 
@@ -72,9 +75,6 @@ Employee.prototype.render = function () {
     const employeeNetSalary = document.createElement("p");
     employeeNetSalary.textContent = `Net Salary: $${this.netSalary.toFixed(2)}`;
 
-    
- 
-
     employeeCard.appendChild(employeeImage);
     employeeCard.appendChild(employeeName);
     employeeCard.appendChild(employeeID);
@@ -84,6 +84,13 @@ Employee.prototype.render = function () {
     employeeCard.appendChild(employeeNetSalary);
 
     departmentContainer.appendChild(employeeCard);
+};
+
+Employee.prototype.fullNameExistsInAssets = function () {
+    // List of names existing in the assets directory (without file extension)
+    const namesInAssets = ["Lana", "Omar", "Ghazi", "Hadi", "Rana", "Safi", "Tamara"];
+
+    return namesInAssets.includes(this.fullName);
 };
 const employees = [];
 
