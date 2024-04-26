@@ -46,8 +46,9 @@ Employee.prototype.render = function () {
     employeeCard.classList.add("employee-card");
 
     const employeeImage = document.createElement("img");
+    console.log(this.fullName);
     employeeImage.src = `assets/${this.fullName}.jpg`;
-    employeeImage.alt = "not found";
+    employeeImage.alt = 'not found';
     employeeImage.height = "100";
     employeeImage.width = "100";
 
@@ -79,37 +80,26 @@ Employee.prototype.render = function () {
 
     departmentContainer.appendChild(employeeCard);
 };
+const employees = [];
 
-// Array to store employees
-let employees = [];
 
-// Save employees to Local Storage
-function saveEmployeesToLocalStorage() {
-    localStorage.setItem("employees", JSON.stringify(employees));
-}
+document.getElementById('employee-form').addEventListener('submit', function (event) {
+    event.preventDefault(); // Prevent form submission
 
-// Retrieve employees from Local Storage
-function retrieveEmployeesFromLocalStorage() {
-    const storedEmployees = localStorage.getItem("employees");
+    const fullName = document.getElementById('full-name').value;
+    const department = document.getElementById('department').value;
+    const level = document.getElementById('level').value;
+    const imageURL = document.getElementById('image-url').value;
 
-    if (storedEmployees) {
-        employees = JSON.parse(storedEmployees);
-        employees.forEach((employee) => {
-            const newEmployee = new Employee(
-                employee.employeeID,
-                employee.fullName,
-                employee.department,
-                employee.level,
-                employee.imageURL
-            );
-            newEmployee.salary = employee.salary;
-            newEmployee.netSalary = employee.netSalary;
-            newEmployee.render();
-        });
-    }
-}
+    const employee = new Employee(generateEmployeeID(), fullName, department, level, imageURL);
+    employee.calculateSalary();
+    employee.render();
 
-// Generate a unique employee ID
+    // Clear form fields after submission
+    document.getElementById('employee-form').reset();
+});
+
+
 function generateEmployeeID() {
     const existingIDs = employees.map((employee) => employee.employeeID);
     let newID;
